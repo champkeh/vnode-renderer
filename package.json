@@ -1,0 +1,20 @@
+{
+  "name": "vnode-renderer",
+  "version": "1.0.0",
+  "description": "vnode的渲染器",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/champkeh/vnode-renderer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/champkeh/vnode-renderer/issues"
+  },
+  "homepage": "https://github.com/champkeh/vnode-renderer#readme"
+}
