@@ -14,7 +14,7 @@ export function h(tag, data = null, children = null) {
     if (typeof tag === 'string') {
         flags = tag === 'svg' ? VNodeFlags.ELEMENT_SVG : VNodeFlags.ELEMENT_HTML
         // 序列号 class
-        if (data) {
+        if (data && data.class != null) {
             data.class = normalizeClass(data.class)
         }
     } else if (tag === Fragment) {
@@ -80,7 +80,7 @@ export function h(tag, data = null, children = null) {
 
 
 // 创建纯文本节点的 VNode
-function createTextVNode(text) {
+export function createTextVNode(text) {
     return {
         _isVNode: true,
         el: null,
