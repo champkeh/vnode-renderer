@@ -1,17 +1,15 @@
-import {render, h, Fragment, Portal, Component} from './core.js'
+import {h} from './h.js'
+import {render} from './render.js'
 
-console.log(h('div', null, h('span')))
+const dynamicClass = ['class-b', 'class-c']
 
-console.log(h('div', null, '我是文本'))
+const vnode = h(
+    'div',
+    {
+        class: ['cls-a cls-b', dynamicClass]
+    }
+)
+console.log(vnode)
 
-console.log(h(Fragment, null, [h('td'), h('td')]))
+render(vnode, document.getElementById('app'))
 
-console.log(h(Portal, {target: '#box'}, h('h1')))
-
-function MyFunctionalComponent() {}
-
-console.log(h(MyFunctionalComponent, null, h('div')))
-
-class MyStatefulComponent extends Component {}
-
-console.log(h(MyStatefulComponent, null, h('div')))

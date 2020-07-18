@@ -1,36 +1,4 @@
-import {VNodeFlags,ChildrenFlags, VNodeFlagsDescription, ChildrenFlagsDescription} from "./vnode.js";
-
-export function render(vnode, container) {
-    mount(vnode, container)
-}
-
-function mount(vnode, container) {
-    if (typeof vnode.tag === 'string') {
-        // html 标签
-        mountElement(vnode, container)
-    } else {
-        // 组件
-        mountComponent(vnode, container)
-    }
-}
-
-// 挂载 html 标签
-function mountElement(vnode, container) {
-    // 创建元素
-    const el = document.createElement(vnode.tag)
-
-    // 将元素添加到容器
-    container.appendChild(el)
-}
-
-// 挂载 组件
-function mountComponent(vnode, container) {
-    // 创建组件实例
-    const instance = new vnode.tag()
-    // 渲染
-    instance.$vnode = instance.render()
-    mount(instance.$vnode, container)
-}
+import {VNodeFlags, VNodeFlagsDescription, ChildrenFlags, ChildrenFlagsDescription} from "./flags.js"
 
 // Fragment 唯一标识
 export const Fragment = Symbol("Fragment")
@@ -38,42 +6,17 @@ export const Fragment = Symbol("Fragment")
 // Portal 唯一标识
 export const Portal = Symbol("Portal")
 
-function normalizeVNodes(children) {
-    const newChildren = []
-
-    // 遍历 children
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i]
-        if (child.key == null) {
-            // 如果原来的 VNode 没有 key，则使用竖线(|)与该 VNode 在数组中的索引拼接而成的字符串作为 key
-            child.key = '|' + i
-        }
-        newChildren.push(child)
-    }
-    // 此时 children 的类型就是 ChildrenFlags.KEYED_VNODES
-    return newChildren
-}
-
-// 创建纯文本节点的 VNode
-function createTextVNode(text) {
-    return {
-        _isVNode: true,
-        el: null,
-        flags: VNodeFlags.TEXT,
-        flagsDesc: VNodeFlagsDescription[VNodeFlags.TEXT],
-        tag: null,
-        data: null,
-        childFlags: ChildrenFlags.NO_CHILDREN,
-        childFlagsDesc: ChildrenFlagsDescription[ChildrenFlags.NO_CHILDREN],
-        children: text
-    }
-}
 
 // 创建 vnode 的辅助函数
 export function h(tag, data = null, children = null) {
+    // 确定 flags
     let flags = null
     if (typeof tag === 'string') {
         flags = tag === 'svg' ? VNodeFlags.ELEMENT_SVG : VNodeFlags.ELEMENT_HTML
+        // 序列号 class
+        if (data) {
+            data.class = normalizeClass(data.class)
+        }
     } else if (tag === Fragment) {
         flags = VNodeFlags.FRAGMENT
     } else if (tag === Portal) {
@@ -93,9 +36,10 @@ export function h(tag, data = null, children = null) {
         }
     }
 
+    // 确定 childFlags
     let childFlags = null
     if (Array.isArray(children)) {
-        const { length } = children
+        const {length} = children
         if (length === 0) {
             // 没有 children
             childFlags = ChildrenFlags.NO_CHILDREN
@@ -134,8 +78,54 @@ export function h(tag, data = null, children = null) {
     }
 }
 
-export class Component {
-    render() {
-        throw new Error('组件缺少 render 函数')
+
+// 创建纯文本节点的 VNode
+function createTextVNode(text) {
+    return {
+        _isVNode: true,
+        el: null,
+        flags: VNodeFlags.TEXT,
+        flagsDesc: VNodeFlagsDescription[VNodeFlags.TEXT],
+        tag: null,
+        data: null,
+        childFlags: ChildrenFlags.NO_CHILDREN,
+        childFlagsDesc: ChildrenFlagsDescription[ChildrenFlags.NO_CHILDREN],
+        children: text
     }
+}
+
+function normalizeVNodes(children) {
+    const newChildren = []
+
+    // 遍历 children
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        if (child.key == null) {
+            // 如果原来的 VNode 没有 key，则使用竖线(|)与该 VNode 在数组中的索引拼接而成的字符串作为 key
+            child.key = '|' + i
+        }
+        newChildren.push(child)
+    }
+    // 此时 children 的类型就是 ChildrenFlags.KEYED_VNODES
+    return newChildren
+}
+
+function normalizeClass(cls) {
+    // res 是最终要返回的类名字符串
+    let res = ''
+    if (typeof cls === 'string') {
+        res = cls
+    } else if (Array.isArray(cls)) {
+        for (let i = 0; i < cls.length; i++) {
+            res += normalizeClass(cls[i]) + ' '
+        }
+    } else if (typeof cls === 'object') {
+        for (const key in cls) {
+            if (cls[key]) {
+                res += key + ' '
+            }
+        }
+    }
+
+    return res.trim()
 }

@@ -1,4 +1,4 @@
-import {VNodeFlags,ChildrenFlags} from "./vnode.js";
+import {VNodeFlags,ChildrenFlags} from "./flags.js";
 
 // html 元素节点
 const htmlVnode = {

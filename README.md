@@ -24,7 +24,7 @@ export interface VNode {
 
 ## 应用层代码
 ```js
-import {render, h, Fragment, Portal, Component} from './core.js'
+import {render, h, Fragment, Portal, Component} from './render.js'
 
 console.log(h('div', null, h('span')))
 
