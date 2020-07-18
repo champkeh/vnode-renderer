@@ -1,4 +1,4 @@
-import {VNodeFlags,ChildrenFlags} from "./vnode";
+import {VNodeFlags,ChildrenFlags} from "./vnode.js";
 
 // html 元素节点
 const htmlVnode = {
@@ -45,9 +45,9 @@ const elementVnode = {
 const textVnode = {
     flags: VNodeFlags.TEXT,
     tag: null,
-    data: '我是文本',
+    data: null,
     childFlags: ChildrenFlags.NO_CHILDREN,
-    children: null
+    children: '我是文本'
 }
 
 // 拥有多个使用了 key 的 li 标签作为子节点的 ul 标签

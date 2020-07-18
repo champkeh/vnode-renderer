@@ -1,50 +1,17 @@
-import {render} from './core.js'
-import {VNodeFlags} from "./vnode";
+import {render, h, Fragment, Portal, Component} from './core.js'
 
-// html 元素节点
-const htmlVnode = {
-    flags: VNodeFlags.ELEMENT_HTML,
-    tag: 'div',
-    data: null
-}
+console.log(h('div', null, h('span')))
 
-// svg 元素节点
-const svgVnode = {
-    flags: VNodeFlags.ELEMENT_SVG,
-    tag: 'svg',
-    data: null
-}
+console.log(h('div', null, '我是文本'))
 
-const functionalComponentVnode = {
-    flags: VNodeFlags.COMPONENT_FUNCTIONAL,
-    tag: MyComponent
-}
+console.log(h(Fragment, null, [h('td'), h('td')]))
 
-// Fragment
-const fragmentVnode = {
-    flags: VNodeFlags.FRAGMENT,
-    tag: null
-}
+console.log(h(Portal, {target: '#box'}, h('h1')))
 
-// Portal
-const portalVnode = {
-    flags: VNodeFlags.PORTAL,
-    tag: target
-}
+function MyFunctionalComponent() {}
 
-// render(elementVnode, document.getElementById('app'))
+console.log(h(MyFunctionalComponent, null, h('div')))
 
-class MyComponent {
-    render() {
-        // render 函数产出 VNode
-        return {
-            tag: 'div'
-        }
-    }
-}
+class MyStatefulComponent extends Component {}
 
-const componentVnode = {
-    tag: MyComponent
-}
-
-render(componentVnode, document.getElementById('app'))
+console.log(h(MyStatefulComponent, null, h('div')))
